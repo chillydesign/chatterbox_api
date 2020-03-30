@@ -66,60 +66,75 @@ if ( isset($_GET['route'])  ) {
             }
             
         } // end of if route is messages
+
+
+        if ($route == 'users') {
+            if (isset($_GET['id'])) {
+                if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                    include('routes/users/delete.php');
+                } else if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+                    include('routes/users/update.php');
+                } else {
+                    include('routes/users/show.php');
+                }
+            } else  {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                   // logged in people can create new user
+                } else {
+                    include('routes/users/index.php');
+                }
+            }
+            
+        } // end of if route is users
+
+
+        if ($route == 'uploads') {
+            if (isset($_GET['id'])) {
+                if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                    include('routes/uploads/delete.php');
+                } else if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+                    include('routes/uploads/update.php');
+                } else {
+                    include('routes/uploads/show.php');
+                }
+            } else  {
+
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    include('routes/uploads/create.php');
+                } else {
+                    include('routes/uploads/index.php');
+                }
+            }
+        } // end of if route is messages
+        
+    } else { // END OF NEED TO BE LOGGED IN 
+
+
     
-    }
-
-
-  
-    if ($route == 'user_tokens') {
-        
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                include('routes/user_tokens/create.php');
-            } 
-        
-    } // end of if route is users
-
-
-
-    if ($route == 'users') {
-        if (isset($_GET['id'])) {
-            if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                include('routes/users/delete.php');
-            } else if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-                 include('routes/users/update.php');
-            } else {
-                include('routes/users/show.php');
+        // NON LOGGED IN USERS CAN REGISTER
+        if ($route == 'users') {
+            if (isset($_GET['id'])) {
+             
+            } else  {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    include('routes/users/create.php');
+                }
             }
-        } else  {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                include('routes/users/create.php');
-            } else {
-                include('routes/users/index.php');
-            }
-        }
-        
-    } // end of if route is users
+            
+        } // end of if route is users
 
 
-    if ($route == 'uploads') {
-        if (isset($_GET['id'])) {
-            if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                include('routes/uploads/delete.php');
-            } else if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-                 include('routes/uploads/update.php');
-            } else {
-                include('routes/uploads/show.php');
-            }
-        } else  {
+        if ($route == 'user_tokens') {
+            
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    include('routes/user_tokens/create.php');
+                } 
+            
+        } // end of if route is users
 
-   
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                include('routes/uploads/create.php');
-            } else {
-                include('routes/uploads/index.php');
-            }
-        }
-    } // end of if route is messages
+    } // end if not logged in
+
+
 
 
 

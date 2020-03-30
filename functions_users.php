@@ -312,6 +312,7 @@ function processUser($user) {
 
  
     $user->id =  intval($user->id);
+    unset($user->password_digest);
     return $user;
 }
 
