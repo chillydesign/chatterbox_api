@@ -39,7 +39,7 @@ function get_user_from_collection($user_id, $users) {
     foreach($users as $user) {
 
         if (  intval($user->id) == intval($user_id)) {
-            return $user;
+            return processUser($user);
         }
     }
 
@@ -201,7 +201,7 @@ function get_user_from_password( $user = null) {
 
             if ($user_count == 1) {
                 $user =  $user_query->fetch();
-                return $user;
+                return  processUser($user);
             } else {
                 return false;
             }
@@ -233,7 +233,7 @@ function get_user_from_email( $email=null) {
 
             if ($user_count == 1) {
                 $user =  $user_query->fetch();
-                return $user;
+                return processUser($user);
             } else {
                 return false;
             }
@@ -269,7 +269,7 @@ function get_user_from_token( $token=null) {
 
             if ($user_count == 1) {
                 $user =  $user_query->fetch();
-                return $user;
+                return  processUser($user);
             } else {
                 return false;
             }
@@ -312,6 +312,7 @@ function processUser($user) {
 
  
     $user->id =  intval($user->id);
+    $user->is_an_admin = ($user->is_an_admin == 1);
     unset($user->password_digest);
     return $user;
 }
