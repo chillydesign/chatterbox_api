@@ -25,13 +25,13 @@ if (!empty($data->attributes)) {
             echo json_encode($resp);
         } else {
             http_response_code(404);
-            echo json_encode( 'Error');
+            echo json_encode( 'Error1');
         }
 
 
 
 } else {
     http_response_code(404);
-    echo json_encode( 'Error'  );
+    echo json_encode( 'Error2'  );
 }
 ?>

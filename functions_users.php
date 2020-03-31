@@ -134,20 +134,14 @@ function update_user($user_id, $user) {
     global $conn;
     if ( $user_id > 0 ){
         try {
-
-      
-
             $updated_at =   updated_at_string();
             $query = "UPDATE chusers SET 
             `email` = :email, 
             `username` = :username, 
-     
             WHERE id = :id";
             $user_query = $conn->prepare($query);
             $user_query->bindParam(':username', $user->username);
             $user_query->bindParam(':email', $user->email);
-     
-     
             $user_query->bindParam(':id', $user_id);
             $user_query->execute();
             unset($conn);
@@ -164,6 +158,38 @@ function update_user($user_id, $user) {
 
 }
 
+
+
+
+function set_user_approval($user_id, $approved) {
+    global $conn;
+    if ( $user_id > 0 ){
+
+
+        if ($approved) {
+            $approved_bool = 1;
+        } else {
+            $approved_bool = 0;
+        }
+        try {
+
+            $query = "UPDATE chusers SET   `is_approved` = :is_approved  WHERE id = :id";
+            $user_query = $conn->prepare($query);
+            $user_query->bindParam(':is_approved', $approved_bool);
+            $user_query->bindParam(':id', $user_id);
+            $user_query->execute();
+            unset($conn);
+            return true;
+
+        } catch(PDOException $err) {
+            return false;
+        };
+
+    } else { // user name was blank
+        return false;
+    }
+
+}
 
 function make_token_from_user_id($user_id= null) {
     if ($user_id ){
@@ -313,6 +339,7 @@ function processUser($user) {
  
     $user->id =  intval($user->id);
     $user->is_an_admin = ($user->is_an_admin == 1);
+    $user->is_approved = ($user->is_approved == 1);
     unset($user->password_digest);
     return $user;
 }
