@@ -40,6 +40,31 @@ function get_conversations($opts = null){
 
 
 
+
+function count_conversations(){
+    global $conn;
+
+
+
+    try {
+        $query = "SELECT id FROM conversations WHERE deleted = 0";
+        $conversations_query = $conn->prepare($query);
+        $conversations_query->setFetchMode(PDO::FETCH_OBJ);
+        $conversations_query->execute();
+        $conversations_count = $conversations_query->rowCount();
+
+        return   $conversations_count;
+
+
+        unset($conn);
+
+    } catch(PDOException $err) {
+        return 0;
+    };
+}
+
+
+
 function get_conversation($conversation_id = null) {
 
     global $conn;
