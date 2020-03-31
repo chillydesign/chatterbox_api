@@ -140,6 +140,33 @@ function update_message($message_id, $message) {
 
 
 
+function update_message_conversation_count($message ) {
+
+    global $conn;
+
+    if ($message->conversation_id) {
+
+        $message_count = count_messages_by_conversations_id($message->conversation_id);
+
+        try {
+
+            $query = "UPDATE conversations SET  `messages_count` = :messages_count WHERE id = :id";
+            $conversation_query = $conn->prepare($query);
+            $conversation_query->bindParam(':messages_count', $message_count);
+            $conversation_query->bindParam(':id', $message->conversation_id);
+            $conversation_query->execute();
+            unset($conn);
+            return true;
+
+        } catch(PDOException $err) {
+            return false;
+
+        };
+
+    };
+
+}
+
 
 function delete_message($message_id) {
 

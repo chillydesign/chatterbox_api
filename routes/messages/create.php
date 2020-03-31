@@ -13,7 +13,14 @@ if (!empty($data->attributes) && $current_user) {
 
     if ($message_id) {
         
+    
         $message = get_message($message_id);
+
+        if ($message) {
+            update_message_conversation_count($message);
+            touch_conversation($message->conversation_id);
+        }
+  
         $message->user = $current_user;
        
         http_response_code(201);

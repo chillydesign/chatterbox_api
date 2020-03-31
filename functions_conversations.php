@@ -12,7 +12,7 @@ function get_conversations($opts = null){
 
     try {
         $query = "SELECT *  FROM conversations
-        ORDER BY conversations.created_at DESC
+        ORDER BY conversations.updated_at DESC
         LIMIT :limit OFFSET :offset ";
         $conversations_query = $conn->prepare($query);
         $conversations_query->bindParam(':limit', intval($opts['limit']), PDO::PARAM_INT);
@@ -43,9 +43,6 @@ function get_conversations($opts = null){
 
 function count_conversations(){
     global $conn;
-
-
-
     try {
         $query = "SELECT id FROM conversations WHERE deleted = 0";
         $conversations_query = $conn->prepare($query);
@@ -54,14 +51,32 @@ function count_conversations(){
         $conversations_count = $conversations_query->rowCount();
 
         return   $conversations_count;
-
-
         unset($conn);
 
     } catch(PDOException $err) {
         return 0;
     };
 }
+
+
+function count_messages_by_conversations_id($conversation_id){
+    global $conn;
+    try {
+        $query = "SELECT id FROM messages WHERE conversation_id = :conversation_id";
+        $count_query = $conn->prepare($query);
+        $count_query->setFetchMode(PDO::FETCH_OBJ);
+        $count_query->bindParam(':conversation_id', $conversation_id  , PDO::PARAM_INT);
+        $count_query->execute();
+        $conversations_count = $count_query->rowCount();
+
+        return  $conversations_count;
+        unset($conn);
+
+    } catch(PDOException $err) {
+        return 0;
+    };
+}
+
 
 
 
@@ -103,12 +118,13 @@ function create_conversation($conversation) {
     global $conn;
     global $current_user;
     if ( $current_user &&   !empty($conversation->title )){
-
+        $updated_at = updated_at_string();
         try {
-            $query = "INSERT INTO conversations (title, user_id) VALUES (:title, :user_id)";
+            $query = "INSERT INTO conversations (title, user_id, updated_at) VALUES (:title, :user_id, :updated_at)";
             $conversation_query = $conn->prepare($query);
             $conversation_query->bindParam(':title', $conversation->title);
             $conversation_query->bindParam(':user_id', $current_user->id);
+            $conversation_query->bindParam(':updated_at', $updated_at);
             $conversation_query->execute();
             $conversation_id = $conn->lastInsertId();
             unset($conn);
