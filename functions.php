@@ -8,7 +8,6 @@ function updated_at_string() {
 
 include('functions_conversations.php');
 include('functions_messages.php');
-include('functions_uploads.php');
 include('functions_users.php');
 
 

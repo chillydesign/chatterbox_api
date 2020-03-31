@@ -88,25 +88,7 @@ if ( isset($_GET['route'])  ) {
         } // end of if route is users
 
 
-        if ($route == 'uploads') {
-            if (isset($_GET['id'])) {
-                if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                    include('routes/uploads/delete.php');
-                } else if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-                    include('routes/uploads/update.php');
-                } else {
-                    include('routes/uploads/show.php');
-                }
-            } else  {
-
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    include('routes/uploads/create.php');
-                } else {
-                    include('routes/uploads/index.php');
-                }
-            }
-        } // end of if route is messages
-        
+       
     } else { // END OF NEED TO BE LOGGED IN 
 
 

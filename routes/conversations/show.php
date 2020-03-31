@@ -9,10 +9,8 @@ $conversation = get_conversation($id);
 if ($conversation) {
     $messages = get_messages($id);
     $user = get_user($conversation->user_id);
-    $uploads =  []; //  get_uploads($id);
-
     $conversation->messages = $messages;
-    // $conversation->uploads = $uploads;
+
 
     $conversation->user_id = intval($conversation->user_id);
     $conversation->id = intval($conversation->id);

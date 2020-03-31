@@ -17,6 +17,10 @@ if (!empty($data->attributes) && $current_user) {
         $message = get_message($message_id);
 
         if ($message) {
+
+            if (!empty($message_attributes->file)) {
+                add_file_to_message($message, $message_attributes->file);
+            }
             update_message_conversation_count($message);
             touch_conversation($message->conversation_id);
         }
