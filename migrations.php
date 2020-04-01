@@ -20,12 +20,13 @@ function klxc_add_migration($query) {
 }
 
 
-$add_approved_to_usrs = "ALTER TABLE `chusers` ADD `is_approved` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_an_admin`;  ";
-if (klxc_add_migration($add_approved_to_usrs)) {
-    echo 'added add_approved_to_usrs';
-} else {
-    echo 'error add_approved_to_usrs';
-};
+// $add_approved_to_usrs = "ALTER TABLE `chusers` ADD `is_approved` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_an_admin`;  ";
+// if (klxc_add_migration($add_approved_to_usrs)) {
+//     echo 'added add_approved_to_usrs';
+// } else {
+//     echo 'error add_approved_to_usrs';
+// };
+
 // $add_file_to_messa = "ALTER TABLE `messages` ADD `file` VARCHAR(511) NOT NULL AFTER `conversation_id`;  ";
 // if (klxc_add_migration($add_file_to_messa)) {
 //     echo 'added add_file_to_messa';
