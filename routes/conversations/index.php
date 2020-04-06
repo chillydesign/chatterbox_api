@@ -13,19 +13,16 @@ $users = get_users();
 foreach($conversations as $conversation) {
     $conversation->user_id = intval($conversation->user_id);
     $conversation->id = intval($conversation->id);
- 
-  $conversation->user =  get_user_from_collection($conversation->user_id, $users);
+    $conversation->user =  get_user_from_collection($conversation->user_id, $users);
 
 }
     
 
 $ret = new stdClass();
-$ret->conversations = $conversations;
-$ret->total_count = $total_count;
+  $ret->conversations = $conversations;
+  $ret->total_count = $total_count;
 
 echo json_encode($ret);
 
-// CANT GET ANGULAR TO WORK THIS
-// header('X-Total-Count: '. $total_count);
 
 ?>

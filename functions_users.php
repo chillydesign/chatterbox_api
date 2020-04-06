@@ -2,16 +2,20 @@
 
 
 
-function get_users(){
+function get_users( $opts = null ){
     global $conn;
 
+    if($opts == null) {
+        $opts =  array('limit' => 2000, 'offset' => 0);
+    };
 
-        $query = "SELECT *  FROM chusers   ORDER BY chusers.created_at ASC";
-  
+    $query = "SELECT *  FROM chusers  ORDER BY chusers.created_at ASC  LIMIT :limit OFFSET :offset";
 
     try {
 
         $users_query = $conn->prepare($query);
+        $users_query->bindParam(':limit', intval($opts['limit']), PDO::PARAM_INT);
+        $users_query->bindParam(':offset', intval($opts['offset']), PDO::PARAM_INT);
         $users_query->setFetchMode(PDO::FETCH_OBJ);
         $users_query->execute();
         $users_count = $users_query->rowCount();
@@ -77,6 +81,24 @@ function get_user($user_id = null) {
 }
 
 
+function count_users(){
+    global $conn;
+    try {
+        $query = "SELECT id FROM chusers";
+        $users_query = $conn->prepare($query);
+        $users_query->setFetchMode(PDO::FETCH_OBJ);
+        $users_query->execute();
+        $users_count = $users_query->rowCount();
+
+        return $users_count;
+        unset($conn);
+
+    } catch(PDOException $err) {
+        return 0;
+    };
+}
+
+
 
 function encrypt_password($password) {
 
@@ -91,14 +113,14 @@ function create_user($user) {
 
             $password_digest = encrypt_password($user->password);
 
-      
+            $email = strtolower($user->email);
 
                 try {
                     $query = "INSERT INTO chusers
                      (email, password_digest, username) VALUES 
                      (:email, :password_digest, :username)";
                     $user_query = $conn->prepare($query);
-                    $user_query->bindParam(':email', strtolower($user->email));
+                    $user_query->bindParam(':email',  $email);
                     $user_query->bindParam(':username', $user->username);
                     $user_query->bindParam(':password_digest',$password_digest);
                   
@@ -133,6 +155,8 @@ function create_user($user) {
 function update_user($user_id, $user) {
     global $conn;
     if ( $user_id > 0 ){
+
+        $email = strtolower($user->email);
         try {
             $updated_at =   updated_at_string();
             $query = "UPDATE chusers SET 
@@ -141,7 +165,7 @@ function update_user($user_id, $user) {
             WHERE id = :id";
             $user_query = $conn->prepare($query);
             $user_query->bindParam(':username', $user->username);
-            $user_query->bindParam(':email', strtolower($user->email));
+            $user_query->bindParam(':email', $email);
             $user_query->bindParam(':id', $user_id);
             $user_query->execute();
             unset($conn);
@@ -247,10 +271,12 @@ function get_user_from_email( $email=null) {
     global $conn;
     if ( $email != null ) {
 
+        $email =  strtolower($email);
+
         try {
             $query = "SELECT * FROM chusers WHERE email = :email LIMIT 1";
             $user_query = $conn->prepare($query);
-            $user_query->bindParam(':email', strtolower($email));
+            $user_query->bindParam(':email',  $email);
             $user_query->setFetchMode(PDO::FETCH_OBJ);
             $user_query->execute();
 
