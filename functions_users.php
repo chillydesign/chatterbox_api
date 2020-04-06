@@ -98,7 +98,7 @@ function create_user($user) {
                      (email, password_digest, username) VALUES 
                      (:email, :password_digest, :username)";
                     $user_query = $conn->prepare($query);
-                    $user_query->bindParam(':email', $user->email);
+                    $user_query->bindParam(':email', strtolower($user->email));
                     $user_query->bindParam(':username', $user->username);
                     $user_query->bindParam(':password_digest',$password_digest);
                   
@@ -141,7 +141,7 @@ function update_user($user_id, $user) {
             WHERE id = :id";
             $user_query = $conn->prepare($query);
             $user_query->bindParam(':username', $user->username);
-            $user_query->bindParam(':email', $user->email);
+            $user_query->bindParam(':email', strtolower($user->email));
             $user_query->bindParam(':id', $user_id);
             $user_query->execute();
             unset($conn);
@@ -211,7 +211,7 @@ function get_user_from_password( $user = null) {
 
     
 
-        $email = $user->email;
+        $email = strtolower($user->email);
         $password_digest = encrypt_password($user->password);
 
         try {
@@ -250,7 +250,7 @@ function get_user_from_email( $email=null) {
         try {
             $query = "SELECT * FROM chusers WHERE email = :email LIMIT 1";
             $user_query = $conn->prepare($query);
-            $user_query->bindParam(':email', $email);
+            $user_query->bindParam(':email', strtolower($email));
             $user_query->setFetchMode(PDO::FETCH_OBJ);
             $user_query->execute();
 
