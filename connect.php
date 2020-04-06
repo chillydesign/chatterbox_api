@@ -9,6 +9,7 @@ include('env.php');
 
 
 
+define("ADMIN_EMAIL",  getenv('ADMIN_EMAIL') );
 define("DB_HOST",  getenv('DB_HOST') );
 define("DB_NAME",  getenv('DB_NAME') );
 define("DB_USER",  getenv('DB_USER') );
