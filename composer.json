@@ -1,0 +1,14 @@
+{
+    "name": "charles/chatterbox_api",
+    "description": "API for chatterbox message board",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.1"
+    },
+    "authors": [
+        {
+            "name": "Charles Harvey",
+            "email": "harvey.charles@gmail.com"
+        }
+    ]
+}

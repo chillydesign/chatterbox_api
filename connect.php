@@ -10,6 +10,9 @@ include('env.php');
 
 
 define("ADMIN_EMAIL",  getenv('ADMIN_EMAIL') );
+define("MAIL_USERNAME", getenv('MAIL_USERNAME'));
+define("MAIL_PASSWORD", getenv('MAIL_PASSWORD'));
+
 define("DB_HOST",  getenv('DB_HOST') );
 define("DB_NAME",  getenv('DB_NAME') );
 define("DB_USER",  getenv('DB_USER') );
@@ -20,6 +23,8 @@ define("JWTKEY",  getenv('JWTKEY') );
 
 define("UPLOADDIR",  '/public/uploads/' );
 define("FILELOC", dirname(__FILE__) );
+
+
 
 
 try {
@@ -36,6 +41,10 @@ try {
 }
 
 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 

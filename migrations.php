@@ -5,6 +5,13 @@ include('connect.php');
 include('functions.php');
 
 
+
+$message = 'Charles  has registered on BangorChat. Visit <a href="https://bangorchat.site/users">the users page to approve this user</a>.';
+$sendmail = send_php_mail(ADMIN_EMAIL, 'New user on BangorChat', $message );
+if ($sendmail) {
+    echo 'mail sent';
+}
+
 function klxc_add_migration($query) {
     global $conn;
         try {
