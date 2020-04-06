@@ -22,7 +22,7 @@ if (!empty($data->attributes)) {
             $user = get_user($user_id);
 
             // send email to admins about registration
-            $message = $user->username . ' has registered on BangorChat. Visit <a href="https://bangorchat.site/users">the users page to approve this user</a>.';
+            $message = $user->username . ' has registered on BangorChat. Visit <a href="https://bangorchat.site/users">the users page</a> to approve this user.';
             send_php_mail(ADMIN_EMAIL, 'New user on BangorChat', $message);
             // send email to admins about registration
 
