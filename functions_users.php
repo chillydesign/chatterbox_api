@@ -10,12 +10,13 @@ function get_users( $opts = null ){
     };
 
     $query = "SELECT *  FROM chusers  ORDER BY chusers.created_at ASC  LIMIT :limit OFFSET :offset";
-
+    $limit =  intval($opts['limit']);
+    $offset = intval($opts['offset']);
     try {
 
         $users_query = $conn->prepare($query);
-        $users_query->bindParam(':limit', intval($opts['limit']), PDO::PARAM_INT);
-        $users_query->bindParam(':offset', intval($opts['offset']), PDO::PARAM_INT);
+        $users_query->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $users_query->bindParam(':offset', $offset, PDO::PARAM_INT);
         $users_query->setFetchMode(PDO::FETCH_OBJ);
         $users_query->execute();
         $users_count = $users_query->rowCount();
@@ -379,5 +380,3 @@ function processUsers($users) {
 
     return $users;
 }
-
-?>

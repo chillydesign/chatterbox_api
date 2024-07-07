@@ -1,7 +1,7 @@
 <?php
 
 
-function get_messages($conversation_id){
+function get_messages($conversation_id) {
     global $conn;
 
     if ($conversation_id !== null) {
@@ -29,8 +29,7 @@ function get_messages($conversation_id){
 
         unset($conn);
         return $messages;
-
-    } catch(PDOException $err) {
+    } catch (PDOException $err) {
         return [];
     };
 }
@@ -39,7 +38,7 @@ function get_messages($conversation_id){
 
 function get_message($message_id = null) {
     global $conn;
-    if ( $message_id != null) {
+    if ($message_id != null) {
 
         try {
             $query = "SELECT * FROM messages WHERE messages.id = :id LIMIT 1";
@@ -58,7 +57,7 @@ function get_message($message_id = null) {
             }
             unset($conn);
             return $message;
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return null;
         };
     } else { // if message id is not greated than 0
@@ -73,8 +72,8 @@ function get_message($message_id = null) {
 function create_message($message) {
     global $conn;
     global $current_user;
- 
-    if  ( $current_user &&  !empty($message->conversation_id)  && !empty($message->content)  ){
+
+    if ($current_user &&  !empty($message->conversation_id)  && !empty($message->content)) {
 
 
         try {
@@ -85,23 +84,17 @@ function create_message($message) {
             $message_query->bindParam(':conversation_id', $message->conversation_id);
             $message_query->bindParam(':user_id', $current_user->id);
             $message_query->bindParam(':content', $message->content);
-          
+
             $message_query->execute();
             $message_id = $conn->lastInsertId();
             unset($conn);
             return ($message_id);
-
-        } catch(PDOException $err) {
-
+        } catch (PDOException $err) {
             return false;
-
         };
-
     } else { // message conversation_id was blank
         return false;
     }
-
-
 }
 
 
@@ -113,58 +106,56 @@ function add_file_to_message($message, $file) {
 
 
     $filename = null;
-    if ( $current_user &&  !empty($message->id) && !empty($file)) {
-       try {
-
-    
-
-        $message_id = $message->id;
-
-        $file_contents = $file;
-        $filedata = explode(',', $file_contents);
-        $decoded_file = base64_decode($filedata[1]); // remove the mimetype from the base 64 string
+    if ($current_user &&  !empty($message->id) && !empty($file)) {
+        try {
 
 
-        $mime_type = finfo_buffer(finfo_open(), $decoded_file, FILEINFO_MIME_TYPE); // extract mime type
-        $extension = mime2ext($mime_type); // extract extension from mime type
+
+            $message_id = $message->id;
+
+            $file_contents = $file;
+            $filedata = explode(',', $file_contents);
+            $decoded_file = base64_decode($filedata[1]); // remove the mimetype from the base 64 string
 
 
-        $target_dir = FILELOC . UPLOADDIR; // add the specific path to save the file
-        mkdir($target_dir . '/' . $message_id , 0777);
-
-        $filename = 'file.' . $extension; 
-
-      
-        $file_dir = $target_dir . $message_id . '/' .  $filename ;
-        file_put_contents($file_dir, $decoded_file); // save
-
-        $query = "UPDATE messages SET  `file` = :file  WHERE id = :id";
-        $message_query = $conn->prepare($query);
-        $message_query->bindParam(':file', $filename);
-        $message_query->bindParam(':id', $message_id);
-        $message_query->execute();
-        unset($conn);
-
-        $message->file = $filename;
-        $message->file_url =     UPLOADDIR . $message->id . '/'. $message->file;
+            $mime_type = finfo_buffer(finfo_open(), $decoded_file, FILEINFO_MIME_TYPE); // extract mime type
+            $extension = mime2ext($mime_type); // extract extension from mime type
 
 
-        return true;
-      } catch(PDOException $err) {
+            $target_dir = FILELOC . UPLOADDIR; // add the specific path to save the file
+            mkdir($target_dir . '/' . $message_id, 0777);
+
+            $filename = 'file.' . $extension;
+
+
+            $file_dir = $target_dir . $message_id . '/' .  $filename;
+            file_put_contents($file_dir, $decoded_file); // save
+
+            $query = "UPDATE messages SET  `file` = :file  WHERE id = :id";
+            $message_query = $conn->prepare($query);
+            $message_query->bindParam(':file', $filename);
+            $message_query->bindParam(':id', $message_id);
+            $message_query->execute();
+            unset($conn);
+
+            $message->file = $filename;
+            $message->file_url =     UPLOADDIR . $message->id . '/' . $message->file;
+
+
+            return true;
+        } catch (PDOException $err) {
             return false;
         };
-       
     }
-
 }
 
 
 function update_message($message_id, $message) {
     global $conn;
-    if ( $message_id > 0 ){
+    if ($message_id > 0) {
         try {
 
-      
+
 
             $updated_at =   updated_at_string();
             $query = "UPDATE messages SET 
@@ -173,26 +164,22 @@ function update_message($message_id, $message) {
             WHERE id = :id";
             $message_query = $conn->prepare($query);
             $message_query->bindParam(':content', $message->content);
-     
+
             $message_query->bindParam(':id', $message_id);
             $message_query->execute();
             unset($conn);
             return true;
-
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
-
         };
-
     } else { // message name was blank
         return false;
     }
-
 }
 
 
 
-function update_message_conversation_count($message ) {
+function update_message_conversation_count($message) {
 
     global $conn;
 
@@ -209,14 +196,10 @@ function update_message_conversation_count($message ) {
             $conversation_query->execute();
             unset($conn);
             return true;
-
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
-
         };
-
     };
-
 }
 
 
@@ -233,14 +216,12 @@ function delete_message($message_id) {
             $message_query->execute();
             unset($conn);
             return true;
-
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
         };
     } else {
         return false;
     }
-
 }
 
 
@@ -249,9 +230,9 @@ function processMessage($message) {
     $message->user_id =  intval($message->user_id);
     $message->id =  intval($message->id);
     if ($message->file) {
-        $message->file_url =     UPLOADDIR . $message->id . '/'. $message->file;
+        $message->file_url =     UPLOADDIR . $message->id . '/' . $message->file;
     }
-  
+
     $message->conversation_id =  intval($message->conversation_id);
     return $message;
 }
@@ -262,13 +243,13 @@ function processMessages($messages) {
 
     $users = get_users();
 
-   
 
-    
+
+
     foreach ($messages as $message) {
-       processMessage($message);
+        processMessage($message);
 
-       $message->user = get_user_from_collection( $message->user_id, $users);
+        $message->user = get_user_from_collection($message->user_id, $users);
     }
 
     return $messages;
@@ -280,7 +261,7 @@ function processMessages($messages) {
 /*
 to take mime type as a parameter and return the equivalent extension
 */
-function mime2ext($mime){
+function mime2ext($mime) {
     $all_mimes = '{"png":["image\/png","image\/x-png"],"bmp":["image\/bmp","image\/x-bmp",
     "image\/x-bitmap","image\/x-xbitmap","image\/x-win-bitmap","image\/x-windows-bmp",
     "image\/ms-bmp","image\/x-ms-bmp","application\/bmp","application\/x-bmp",
@@ -326,12 +307,9 @@ function mime2ext($mime){
     "eml":["message\/rfc822"],"pem":["application\/x-x509-user-cert","application\/x-pem-file"],
     "p10":["application\/x-pkcs10","application\/pkcs10"],"p12":["application\/x-pkcs12"],
     "p7a":["application\/x-pkcs7-signature"],"p7c":["application\/pkcs7-mime","application\/x-pkcs7-mime"],"p7r":["application\/x-pkcs7-certreqresp"],"p7s":["application\/pkcs7-signature"],"crt":["application\/x-x509-ca-cert","application\/pkix-cert"],"crl":["application\/pkix-crl","application\/pkcs-crl"],"pgp":["application\/pgp"],"gpg":["application\/gpg-keys"],"rsa":["application\/x-pkcs7"],"ics":["text\/calendar"],"zsh":["text\/x-scriptzsh"],"cdr":["application\/cdr","application\/coreldraw","application\/x-cdr","application\/x-coreldraw","image\/cdr","image\/x-cdr","zz-application\/zz-winassoc-cdr"],"wma":["audio\/x-ms-wma"],"vcf":["text\/x-vcard"],"srt":["text\/srt"],"vtt":["text\/vtt"],"ico":["image\/x-icon","image\/x-ico","image\/vnd.microsoft.icon"],"csv":["text\/x-comma-separated-values","text\/comma-separated-values","application\/vnd.msexcel"],"json":["application\/json","text\/json"]}';
-    $all_mimes = json_decode($all_mimes,true);
+    $all_mimes = json_decode($all_mimes, true);
     foreach ($all_mimes as $key => $value) {
-        if(array_search($mime,$value) !== false) return $key;
+        if (array_search($mime, $value) !== false) return $key;
     }
     return false;
 }
-
-
-?>

@@ -2,26 +2,28 @@
 
 
 
-function get_conversations($opts = null){
+function get_conversations($opts = null) {
     global $conn;
 
-    if($opts == null) {
+    if ($opts == null) {
         $opts =  array('limit' => 10, 'offset' => 0);
     };
 
 
+    $limit =  intval($opts['limit']);
+    $offset = intval($opts['offset']);
     try {
         $query = "SELECT *  FROM conversations
         ORDER BY conversations.updated_at DESC
         LIMIT :limit OFFSET :offset ";
         $conversations_query = $conn->prepare($query);
-        $conversations_query->bindParam(':limit', intval($opts['limit']), PDO::PARAM_INT);
-        $conversations_query->bindParam(':offset', intval($opts['offset']), PDO::PARAM_INT);
+        $conversations_query->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $conversations_query->bindParam(':offset', $offset, PDO::PARAM_INT);
         $conversations_query->setFetchMode(PDO::FETCH_OBJ);
         $conversations_query->execute();
         $conversations_count = $conversations_query->rowCount();
 
-    
+
 
         if ($conversations_count > 0) {
             $conversations =  $conversations_query->fetchAll();
@@ -31,9 +33,8 @@ function get_conversations($opts = null){
 
         unset($conn);
         return $conversations;
+    } catch (PDOException $err) {
 
-    } catch(PDOException $err) {
-      
         return [];
     };
 }
@@ -41,7 +42,7 @@ function get_conversations($opts = null){
 
 
 
-function count_conversations(){
+function count_conversations() {
     global $conn;
     try {
         $query = "SELECT id FROM conversations WHERE deleted = 0";
@@ -52,27 +53,25 @@ function count_conversations(){
 
         return   $conversations_count;
         unset($conn);
-
-    } catch(PDOException $err) {
+    } catch (PDOException $err) {
         return 0;
     };
 }
 
 
-function count_messages_by_conversations_id($conversation_id){
+function count_messages_by_conversations_id($conversation_id) {
     global $conn;
     try {
         $query = "SELECT id FROM messages WHERE conversation_id = :conversation_id";
         $count_query = $conn->prepare($query);
         $count_query->setFetchMode(PDO::FETCH_OBJ);
-        $count_query->bindParam(':conversation_id', $conversation_id  , PDO::PARAM_INT);
+        $count_query->bindParam(':conversation_id', $conversation_id, PDO::PARAM_INT);
         $count_query->execute();
         $conversations_count = $count_query->rowCount();
 
         return  $conversations_count;
         unset($conn);
-
-    } catch(PDOException $err) {
+    } catch (PDOException $err) {
         return 0;
     };
 }
@@ -83,7 +82,7 @@ function count_messages_by_conversations_id($conversation_id){
 function get_conversation($conversation_id = null) {
 
     global $conn;
-    if ( $conversation_id != null) {
+    if ($conversation_id != null) {
 
 
         try {
@@ -103,7 +102,7 @@ function get_conversation($conversation_id = null) {
 
             unset($conn);
             return $conversation;
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return null;
         };
     } else { // if conversation id is not greated than 0
@@ -117,8 +116,10 @@ function get_conversation($conversation_id = null) {
 function create_conversation($conversation) {
     global $conn;
     global $current_user;
-    if ( $current_user &&   !empty($conversation->title )){
+    if ($current_user &&   !empty($conversation->title)) {
         $updated_at = updated_at_string();
+
+
         try {
             $query = "INSERT INTO conversations (title, user_id, updated_at) VALUES (:title, :user_id, :updated_at)";
             $conversation_query = $conn->prepare($query);
@@ -130,18 +131,12 @@ function create_conversation($conversation) {
             unset($conn);
 
             return ($conversation_id);
-
-        } catch(PDOException $err) {
-
+        } catch (PDOException $err) {
             return false;
-
         };
-
     } else { // conversation name was blank
         return false;
     }
-
-
 }
 
 
@@ -150,7 +145,7 @@ function create_conversation($conversation) {
 
 function update_conversation($conversation_id, $conversation) {
     global $conn;
-    if ( $conversation_id > 0 ){
+    if ($conversation_id > 0) {
         try {
 
             $updated_at = updated_at_string();
@@ -165,22 +160,18 @@ function update_conversation($conversation_id, $conversation) {
             unset($conn);
 
             return true;
-
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
-
         };
-
     } else { // conversation name was blank
         return false;
     }
-
 }
 
 // change the updated_at date
 function touch_conversation($conversation_id) {
     global $conn;
-    if ( $conversation_id > 0 ){
+    if ($conversation_id > 0) {
         try {
             $updated_at = updated_at_string();
             $query = "UPDATE conversations SET `updated_at` = :updated_at WHERE id = :id";
@@ -190,10 +181,9 @@ function touch_conversation($conversation_id) {
             $conversation_query->execute();
             unset($conn);
             return true;
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
         };
-
     } else { // conversation name was blank
         return false;
     }
@@ -215,18 +205,10 @@ function delete_conversation($conversation_id) {
 
             unset($conn);
             return true;
-
-
-        } catch(PDOException $err) {
+        } catch (PDOException $err) {
             return false;
         };
     } else {
         return false;
     }
-
 }
-
-
-
-
-?>
